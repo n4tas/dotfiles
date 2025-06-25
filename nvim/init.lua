@@ -202,6 +202,10 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
+-- Resize current window height
+vim.keymap.set("n", "<leader>-", ":resize -5<CR>", { desc = "Decrease window height" })
+vim.keymap.set("n", "<leader>+", ":resize +5<CR>", { desc = "Increase window height" })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -609,7 +613,15 @@ require("lazy").setup({
 							group = highlight_augroup,
 							callback = vim.lsp.buf.clear_references,
 						})
-
+						vim.api.nvim_create_autocmd("FileType", {
+							pattern = "c",
+							callback = function()
+								vim.bo.tabstop = 4 -- Number of spaces a tab character shows as
+								vim.bo.shiftwidth = 4 -- Number of spaces used for each indentation level
+								vim.bo.softtabstop = 4 -- Number of spaces for tab in insert mode
+								vim.bo.expandtab = false -- Use real tab characters (not spaces)
+							end,
+						})
 						vim.api.nvim_create_autocmd("LspDetach", {
 							group = vim.api.nvim_create_augroup("kickstart-lsp-detach", { clear = true }),
 							callback = function(event2)
