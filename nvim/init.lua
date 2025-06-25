@@ -180,6 +180,7 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagn
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+vim.keymap.set("n", "<leader>vt", ":vsplit | terminal<CR>", { desc = "Vertical Terminal" })
 
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -202,10 +203,11 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
--- Resize current window height
-vim.keymap.set("n", "<leader>-", ":resize +5<CR>", { desc = "Decrease window height" })
-vim.keymap.set("n", "<leader>+", ":resize -5<CR>", { desc = "Increase window height" })
-
+-- Resize current window width
+vim.keymap.set("n", "<leader>-", ":vertical resize -10<CR>", { desc = "Decrease window width" })
+vim.keymap.set("n", "<leader>=", ":vertical resize +10<CR>", { desc = "Increase window width" })
+vim.keymap.set("n", "<leader><Up>", "resize -10<CR>", { desc = "Decrease window height" })
+vim.keymap.set("n", "<leader><Down>", "resize +10<CR>", { desc = "Increase window height" })
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -619,7 +621,7 @@ require("lazy").setup({
 								vim.bo.tabstop = 4 -- Number of spaces a tab character shows as
 								vim.bo.shiftwidth = 4 -- Number of spaces used for each indentation level
 								vim.bo.softtabstop = 4 -- Number of spaces for tab in insert mode
-								vim.bo.expandtab = false -- Use real tab characters (not spaces)
+								vim.bo.expandtab = true -- Use real tab characters (not spaces)
 							end,
 						})
 						vim.api.nvim_create_autocmd("LspDetach", {
@@ -718,6 +720,7 @@ require("lazy").setup({
 						},
 					},
 				},
+				clangd = {},
 			}
 
 			-- Ensure the servers and tools above are installed
