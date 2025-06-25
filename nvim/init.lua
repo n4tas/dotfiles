@@ -203,8 +203,8 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
 -- Resize current window height
-vim.keymap.set("n", "<leader>-", ":resize -5<CR>", { desc = "Decrease window height" })
-vim.keymap.set("n", "<leader>+", ":resize +5<CR>", { desc = "Increase window height" })
+vim.keymap.set("n", "<leader>-", ":resize +5<CR>", { desc = "Decrease window height" })
+vim.keymap.set("n", "<leader>+", ":resize -5<CR>", { desc = "Increase window height" })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
