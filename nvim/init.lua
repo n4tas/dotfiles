@@ -28,7 +28,14 @@ vim.cmd("filetype plugin indent on")
 vim.cmd("colorscheme gruvbox")
 vim.o.background = "dark"
 vim.o.clipboard = "unnamedplus"
-
+-- Make background transparent
+vim.cmd([[
+  hi Normal guibg=NONE ctermbg=NONE
+  hi NormalNC guibg=NONE ctermbg=NONE
+  hi EndOfBuffer guibg=NONE ctermbg=NONE
+  hi SignColumn guibg=NONE ctermbg=NONE
+  hi VertSplit guibg=NONE ctermbg=NONE
+]])
 -- Autopairs
 require("nvim-autopairs").setup()
 
@@ -49,9 +56,53 @@ require("neo-tree").setup()
 require("telescope").setup{}
 
 -- Lualine
-require("lualine").setup {
-  options = { theme = "rose-pine" }
+require('lualine').setup {
+  options = {
+    theme = {
+      normal = {
+        a = { fg = '#ffffff', bg = 'none' },
+        b = { fg = '#ffffff', bg = 'none' },
+        c = { fg = '#ffffff', bg = 'none' },
+      },
+      insert = {
+        a = { fg = '#ffffff', bg = 'none' },
+        b = { fg = '#ffffff', bg = 'none' },
+        c = { fg = '#ffffff', bg = 'none' },
+      },
+      visual = {
+        a = { fg = '#ffffff', bg = 'none' },
+        b = { fg = '#ffffff', bg = 'none' },
+        c = { fg = '#ffffff', bg = 'none' },
+      },
+      replace = {
+        a = { fg = '#ffffff', bg = 'none' },
+        b = { fg = '#ffffff', bg = 'none' },
+        c = { fg = '#ffffff', bg = 'none' },
+      },
+      inactive = {
+        a = { fg = '#aaaaaa', bg = 'none' },
+        b = { fg = '#aaaaaa', bg = 'none' },
+        c = { fg = '#aaaaaa', bg = 'none' },
+      },
+    },
+    component_separators = '|',
+    section_separators = '',
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch'},
+    lualine_c = {'filename'},
+    lualine_x = {'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = {'location'}
+  },
 }
+
+-- Make lualine transparent by setting highlight groups
+vim.cmd [[
+  highlight StatusLine guibg=none
+  highlight StatusLineNC guibg=none
+]]
 
 -- Alpha Dashboard
 require("alpha").setup(require("alpha.themes.startify").config)
