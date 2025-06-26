@@ -149,6 +149,8 @@ vim.o.splitbelow = true
 vim.o.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
+vim.opt.guifont = "Hurmit Nerd Font:h14"
+
 -- Preview substitutions live, as you type!
 vim.o.inccommand = "split"
 
@@ -273,6 +275,11 @@ require("lazy").setup({
 	-- Here is a more advanced example where we pass configuration
 	-- options to `gitsigns.nvim`.
 	--
+	{
+		"vyfor/cord.nvim",
+		build = ":Cord update",
+		-- opts = {}
+	},
 	-- See `:help gitsigns` to understand what the configuration keys do
 	{ -- Adds git related signs to the gutter, as well as utilities for managing changes
 		"lewis6991/gitsigns.nvim",
