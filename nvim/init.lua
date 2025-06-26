@@ -576,7 +576,7 @@ require("lazy").setup({
 				},
 			})
 
-			vim.cmd.colorscheme("tokyonight-night")
+			vim.cmd.colorscheme("wildcharm")
 			vim.cmd([[
       hi Normal guibg=NONE ctermbg=NONE
       hi NormalNC guibg=NONE ctermbg=NONE
