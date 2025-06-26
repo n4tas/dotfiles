@@ -116,7 +116,24 @@ rtp:prepend(lazypath)
 require("lazy").setup({
 	-- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
 	"NMAC427/guess-indent.nvim", -- Detect tabstop and shiftwidth automatically
-
+	{
+		"nvim-neo-tree/neo-tree.nvim",
+		branch = "v3.x",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-tree/nvim-web-devicons", -- optional but recommended
+			"MunifTanjim/nui.nvim",
+		},
+		config = function()
+			require("neo-tree").setup({
+				window = {
+					position = "left",
+					width = 30,
+				},
+			})
+			vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "Toggle Neo-tree Explorer" })
+		end,
+	},
 	--
 	{
 		"vyfor/cord.nvim",
@@ -638,3 +655,5 @@ require("lazy").setup({
 		},
 	},
 })
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
