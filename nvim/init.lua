@@ -126,6 +126,26 @@ require("lazy").setup({
 	-- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
 	"NMAC427/guess-indent.nvim", -- Detect tabstop and shiftwidth automatically
 	{
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		event = "InsertEnter",
+		config = function()
+			require("copilot").setup({
+				suggestion = {
+					auto_trigger = true,
+					keymap = {
+						accept = "<M-y>",
+						next = "<M-]>",
+						prev = "<M-[>",
+						dismiss = "<C-]>",
+					},
+				},
+				panel = { enabled = false }, -- disable side panel
+			})
+		end,
+	},
+
+	{
 		"tpope/vim-fugitive",
 		cmd = { "Git", "G", "Gdiffsplit", "Gvdiffsplit" },
 		keys = {
@@ -134,6 +154,23 @@ require("lazy").setup({
 			{ "<leader>gp", ":Git push<CR>", desc = "[G]it [P]ush" },
 			{ "<leader>gl", ":Git pull<CR>", desc = "[G]it [L]oad (pull)" },
 		},
+	},
+	{
+		"windwp/nvim-autopairs",
+		event = "InsertEnter",
+		opts = {
+			check_ts = true, -- enable Treesitter integration
+		},
+		config = function(_, opts)
+			require("nvim-autopairs").setup(opts)
+
+			-- integrate with blink.cmp (autocompletion confirm = auto pair close)
+			local cmp_status, cmp = pcall(require, "cmp")
+			if cmp_status then
+				local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+				cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+			end
+		end,
 	},
 	{
 		"nvim-neo-tree/neo-tree.nvim",
@@ -564,7 +601,6 @@ require("lazy").setup({
 			keymap = {
 				preset = "default",
 			},
-
 			appearance = {
 				nerd_font_variant = "mono",
 			},
