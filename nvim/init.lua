@@ -96,6 +96,15 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 		vim.hl.on_yank()
 	end,
 })
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "c", "cpp", "h" },
+	callback = function()
+		vim.bo.expandtab = false -- Use tabs, not spaces
+		vim.bo.tabstop = 4 -- Tab visually = 4 spaces
+		vim.bo.softtabstop = 4 -- <Tab>/<BS> = 4 columns
+		vim.bo.shiftwidth = 4 -- Auto-indent = 4 columns
+	end,
+})
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -116,6 +125,16 @@ rtp:prepend(lazypath)
 require("lazy").setup({
 	-- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
 	"NMAC427/guess-indent.nvim", -- Detect tabstop and shiftwidth automatically
+	{
+		"tpope/vim-fugitive",
+		cmd = { "Git", "G", "Gdiffsplit", "Gvdiffsplit" },
+		keys = {
+			{ "<leader>gs", ":Git<CR>", desc = "[G]it [S]tatus" },
+			{ "<leader>gc", ":Git commit<CR>", desc = "[G]it [C]ommit" },
+			{ "<leader>gp", ":Git push<CR>", desc = "[G]it [P]ush" },
+			{ "<leader>gl", ":Git pull<CR>", desc = "[G]it [L]oad (pull)" },
+		},
+	},
 	{
 		"nvim-neo-tree/neo-tree.nvim",
 		branch = "v3.x",
@@ -375,9 +394,10 @@ require("lazy").setup({
 								vim.bo.tabstop = 4 -- Number of spaces a tab character shows as
 								vim.bo.shiftwidth = 4 -- Number of spaces used for each indentation level
 								vim.bo.softtabstop = 4 -- Number of spaces for tab in insert mode
-								vim.bo.expandtab = true -- Use real tab characters (not spaces)
+								vim.bo.expandtab = false -- Use real tab characters (not spaces)
 							end,
 						})
+
 						vim.api.nvim_create_autocmd("LspDetach", {
 							group = vim.api.nvim_create_augroup("kickstart-lsp-detach", { clear = true }),
 							callback = function(event2)
