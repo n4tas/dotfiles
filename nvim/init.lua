@@ -148,12 +148,6 @@ require("lazy").setup({
 	{
 		"tpope/vim-fugitive",
 		cmd = { "Git", "G", "Gdiffsplit", "Gvdiffsplit" },
-		keys = {
-			{ "<leader>gs", ":Git<CR>", desc = "[G]it [S]tatus" },
-			{ "<leader>gc", ":Git commit<CR>", desc = "[G]it [C]ommit" },
-			{ "<leader>gp", ":Git push<CR>", desc = "[G]it [P]ush" },
-			{ "<leader>gl", ":Git pull<CR>", desc = "[G]it [L]oad (pull)" },
-		},
 	},
 	{
 		"windwp/nvim-autopairs",
