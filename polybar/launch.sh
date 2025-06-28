@@ -7,9 +7,12 @@ killall -q i3bar
 # Wait until the processes have been shut down
 while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
-MONITORS=("DisplayPort-1" "HDMI-1-0" "eDP")
 
 # Launch Polybar instance per monitor
-for MON in "${MONITORS[@]}"; do
-    MONITOR=$MON polybar main -c ~/.config/polybar/config.ini &
-done
+if type "xrandr"; then
+  for m in $(xrandr --query | grep " connected"); do
+    MONITOR=$m polybar --reload main &
+  done
+else
+  polybar --reload main &
+fi
