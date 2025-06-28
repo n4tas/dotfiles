@@ -97,7 +97,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 })
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "c", "cpp", "h" },
+	pattern = { "c", "cpp", "h", "hpp" },
 	callback = function()
 		vim.bo.expandtab = false -- Use tabs, not spaces
 		vim.bo.tabstop = 4 -- Tab visually = 4 spaces
@@ -121,8 +121,38 @@ end
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
--- NOTE: Here is where you install your plugins.
 require("lazy").setup({
+	{
+		"akinsho/bufferline.nvim",
+		version = "*",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+		config = function()
+			require("bufferline").setup({
+				options = {
+					mode = "buffers", -- show buffer tabs (alternative: "tabs")
+					diagnostics = "nvim_lsp", -- show LSP errors/warnings
+					separator_style = "slant", -- or "thick", "thin", "padded_slant"
+					always_show_bufferline = true,
+					show_buffer_close_icons = true,
+					show_close_icon = false,
+					color_icons = true,
+				},
+			})
+
+			-- Keymaps for switching buffers
+			vim.keymap.set("n", "<Tab>", ":BufferLineCycleNext<CR>", { desc = "Next buffer" })
+			vim.keymap.set("n", "<S-Tab>", ":BufferLineCyclePrev<CR>", { desc = "Previous buffer" })
+		end,
+	},
+	{
+		"echasnovski/mini.bufremove",
+		version = "*",
+		config = function()
+			vim.keymap.set("n", "<leader>bd", function()
+				require("mini.bufremove").delete(0, false)
+			end, { desc = "[B]uffer [D]elete (safe)" })
+		end,
+	},
 	"NMAC427/guess-indent.nvim", -- Detect tabstop and shiftwidth automatically
 	{
 		"folke/snacks.nvim",
@@ -182,6 +212,12 @@ require("lazy").setup({
 		},
 		config = function()
 			require("neo-tree").setup({
+				filesystem = {
+					follow_current_file = {
+						enabled = true,
+					},
+					use_libuv_file_watcher = true, -- THIS enables auto updates
+				},
 				window = {
 					position = "left",
 					width = 30,
@@ -632,7 +668,7 @@ require("lazy").setup({
 				},
 			})
 
-			vim.cmd.colorscheme("wildcharm")
+			vim.cmd.colorscheme("tokyonight-night")
 			vim.cmd([[
       hi Normal guibg=NONE ctermbg=NONE
       hi NormalNC guibg=NONE ctermbg=NONE
