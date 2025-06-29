@@ -212,7 +212,7 @@ require("lazy").setup({
 
 	{
 		"tpope/vim-fugitive",
-		cmd = { "Git", "G", "Gdiffsplit", "Gvdiffsplit" },
+		cmd = { "git", "G", "Gdiffsplit", "Gvdiffsplit" },
 	},
 	{
 		"windwp/nvim-autopairs",
