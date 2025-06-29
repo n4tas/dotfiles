@@ -123,6 +123,31 @@ rtp:prepend(lazypath)
 
 require("lazy").setup({
 	{
+		"ellisonleao/gruvbox.nvim",
+		priority = 1000,
+		config = function()
+			require("gruvbox").setup({
+				transparent_mode = true, -- enable transparency
+				contrast = "hard", -- options: "soft", "medium", "hard"
+				overrides = {
+					SignColumn = { bg = "NONE" },
+					Normal = { bg = "NONE" },
+					NormalNC = { bg = "NONE" },
+					NormalFloat = { bg = "NONE" },
+					FloatBorder = { bg = "NONE" },
+					VertSplit = { bg = "NONE" },
+					StatusLine = { bg = "NONE" },
+					StatusLineNC = { bg = "NONE" },
+					LineNr = { bg = "NONE" },
+					EndOfBuffer = { bg = "NONE" },
+				},
+			})
+
+			vim.cmd.colorscheme("gruvbox")
+		end,
+	},
+
+	{
 		"akinsho/bufferline.nvim",
 		version = "*",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -136,6 +161,10 @@ require("lazy").setup({
 					show_buffer_close_icons = true,
 					show_close_icon = false,
 					color_icons = true,
+					custom_filter = function(bufnr)
+						local ft = vim.bo[bufnr].filetype
+						return ft ~= "neo-tree"
+					end,
 				},
 			})
 
@@ -221,6 +250,9 @@ require("lazy").setup({
 				window = {
 					position = "left",
 					width = 30,
+				},
+				filtered_items = {
+					hide_gitignored = false,
 				},
 			})
 			vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "Toggle Neo-tree Explorer" })
@@ -667,12 +699,14 @@ require("lazy").setup({
 					comments = { italic = false }, -- Disable italics in comments
 				},
 			})
-
-			vim.cmd.colorscheme("tokyonight-night")
 			vim.cmd([[
-      hi Normal guibg=NONE ctermbg=NONE
-      hi NormalNC guibg=NONE ctermbg=NONE
-      ]])
+			      hi Normal guibg=NONE ctermbg=NONE
+			      hi NormalNC guibg=NONE ctermbg=NONE
+			      hi EndOfBuffer guibg=NONE ctermbg=NONE
+			      hi NeoTreeNormal guibg=NONE ctermbg=NONE
+			      hi StatusLine guibg=NONE ctermbg=NONE
+			      hi StatusLineNC guibg=NONE ctermbg=NONE
+		    ]])
 		end,
 	},
 	{
