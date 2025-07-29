@@ -65,10 +65,11 @@ vim.o.confirm = true
 --  See `:help hlsearch`
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
+vim.keymap.set("n", "x", '"_x', { desc = "Delete character without yanking" })
+
 -- Diagnostic keymaps
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
---
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
@@ -103,6 +104,15 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.bo.tabstop = 4 -- Tab visually = 4 spaces
 		vim.bo.softtabstop = 4 -- <Tab>/<BS> = 4 columns
 		vim.bo.shiftwidth = 4 -- Auto-indent = 4 columns
+	end,
+})
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "javascript", "typescript", "typescriptreact", "javascriptreact", "svelte" },
+	callback = function()
+		vim.bo.tabstop = 2
+		vim.bo.shiftwidth = 2
+		vim.bo.softtabstop = 2
+		vim.bo.expandtab = true
 	end,
 })
 
@@ -146,7 +156,6 @@ require("lazy").setup({
 			vim.cmd.colorscheme("gruvbox")
 		end,
 	},
-
 	{
 		"akinsho/bufferline.nvim",
 		version = "*",
@@ -188,6 +197,7 @@ require("lazy").setup({
 		---@type snacks.Config
 		opts = {
 			dashboard = {},
+			scroll = {},
 		},
 	},
 	{
@@ -329,7 +339,9 @@ require("lazy").setup({
 			},
 		},
 	},
-
+	{
+		"pangloss/vim-javascript",
+	},
 	{ -- Fuzzy Finder (files, lsp, etc)
 		"nvim-telescope/telescope.nvim",
 		event = "VimEnter",
@@ -636,6 +648,11 @@ require("lazy").setup({
 			end,
 			formatters_by_ft = {
 				lua = { "stylua" },
+				javascript = { "prettier" },
+				typescript = { "prettier" },
+				json = { "prettier" },
+				html = { "prettier" },
+				css = { "prettier" },
 			},
 		},
 	},
