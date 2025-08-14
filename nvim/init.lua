@@ -49,8 +49,6 @@ vim.o.splitbelow = true
 vim.o.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
-vim.opt.guifont = "Hurmit Nerd Font:h14"
-
 -- Preview substitutions live, as you type!
 vim.o.inccommand = "split"
 
@@ -65,7 +63,7 @@ vim.o.confirm = true
 --  See `:help hlsearch`
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
-vim.keymap.set("n", "x", '"_x', { desc = "Delete character without yanking" })
+vim.api.nvim_set_keymap("v", "X", '"_d', { noremap = true, silent = true })
 
 -- Diagnostic keymaps
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
@@ -78,6 +76,8 @@ vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left wind
 vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
+
+vim.opt.autochdir = true
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -253,7 +253,8 @@ require("lazy").setup({
 			require("neo-tree").setup({
 				filesystem = {
 					follow_current_file = {
-						enabled = true,
+						enabled = false,
+						hijack_netrw_behavior = "open_current",
 					},
 					use_libuv_file_watcher = true, -- THIS enables auto updates
 				},
@@ -443,6 +444,11 @@ require("lazy").setup({
 			"saghen/blink.cmp",
 		},
 		config = function()
+			require("lspconfig").clangd.setup({
+				cmd = { "clangd", "--compile-commands-dir=build" },
+				root_dir = require("lspconfig.util").root_pattern("build/compile_commands.json", ".clangd", ".git"),
+			})
+
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
 				callback = function(event)
@@ -584,7 +590,6 @@ require("lazy").setup({
 				--
 
 				lua_ls = {
-					-- cmd = { ... },
 					-- filetypes = { ... },
 					-- capabilities = {},
 					settings = {
@@ -597,7 +602,6 @@ require("lazy").setup({
 						},
 					},
 				},
-				clangd = {},
 			}
 			local ensure_installed = vim.tbl_keys(servers or {})
 			vim.list_extend(ensure_installed, {
