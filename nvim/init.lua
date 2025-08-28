@@ -253,7 +253,6 @@ require("lazy").setup({
 			require("neo-tree").setup({
 				filesystem = {
 					follow_current_file = {
-						enabled = false,
 						hijack_netrw_behavior = "open_current",
 					},
 					use_libuv_file_watcher = true, -- THIS enables auto updates
