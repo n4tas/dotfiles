@@ -153,7 +153,7 @@ require("lazy").setup({
 				},
 			})
 
-			vim.cmd.colorscheme("gruvbox")
+			vim.cmd.colorscheme("quiet")
 		end,
 	},
 	{
@@ -252,19 +252,20 @@ require("lazy").setup({
 		config = function()
 			require("neo-tree").setup({
 				filesystem = {
+					use_libuv_file_watcher = true,
 					follow_current_file = {
-						hijack_netrw_behavior = "open_current",
+						enabled = false, -- 🔒 disable auto-following files
 					},
-					use_libuv_file_watcher = true, -- THIS enables auto updates
+					filtered_items = {
+						hide_gitignored = false,
+					},
 				},
 				window = {
 					position = "left",
 					width = 30,
 				},
-				filtered_items = {
-					hide_gitignored = false,
-				},
 			})
+
 			vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "Toggle Neo-tree Explorer" })
 		end,
 	},

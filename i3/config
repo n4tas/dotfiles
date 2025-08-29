@@ -46,6 +46,7 @@ bindsym $mod+p exec ~/Scripts/toggle-input.sh
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
+focus_follows_mouse no
 
 # move tiling windows via drag & drop by left-clicking into the title bar,
 # or left-clicking anywhere into the window while holding the floating modifier.
