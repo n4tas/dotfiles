@@ -67,6 +67,9 @@ vim.api.nvim_set_keymap("v", "X", '"_d', { noremap = true, silent = true })
 
 -- Diagnostic keymaps
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
+vim.keymap.set("n", "<leader>tt", ":terminal<CR>", { desc = "Open terminal in buffer" })
+vim.keymap.set("n", "<leader>tv", ":vsplit | terminal<CR>", { desc = "Terminal (vertical split)" })
+vim.keymap.set("n", "<leader>ts", ":split | terminal<CR>", { desc = "Terminal (horizontal split)" })
 
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
@@ -77,7 +80,7 @@ vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right win
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 
-vim.opt.autochdir = true
+vim.opt.autochdir = false
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -261,10 +264,10 @@ require("lazy").setup({
 		config = function()
 			require("neo-tree").setup({
 				filesystem = {
-					use_libuv_file_watcher = true,
 					follow_current_file = {
-						enabled = false, -- 🔒 disable auto-following files
+						enabled = false, -- ⛔ No auto-root-following
 					},
+					use_libuv_file_watcher = true,
 					filtered_items = {
 						hide_gitignored = false,
 					},
@@ -274,7 +277,6 @@ require("lazy").setup({
 					width = 30,
 				},
 			})
-
 			vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "Toggle Neo-tree Explorer" })
 		end,
 	},
