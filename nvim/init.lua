@@ -153,8 +153,17 @@ require("lazy").setup({
 				},
 			})
 
-			vim.cmd.colorscheme("quiet")
+			vim.cmd.colorscheme("gruvbox")
 		end,
+	},
+	{
+		"nvim-flutter/flutter-tools.nvim",
+		lazy = false,
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"stevearc/dressing.nvim", -- optional for vim.ui.select
+		},
+		config = true,
 	},
 	{
 		"akinsho/bufferline.nvim",

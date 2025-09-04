@@ -184,11 +184,8 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 
 workspace "1" output HDMI-1-0
-workspace "2" output DisplayPort-1
 workspace "3" output DisplayPort-1
-workspace "4" output eDP
-workspace "5" output eDP
-workspace "6" output eDP
+workspace "2" output eDP
 
 # eDP desine laptopas
 # HDMI_1-0 vidurys 
@@ -222,9 +219,10 @@ for_window [class=".*"] border pixel 0
 exec --no-startup-id ~/.screenlayout/monitors.sh
 exec --no-startup-id sh -c "sleep 2 && i3-msg workspace 1"
 bindsym Print exec --no-startup-id flameshot gui
-exec --no-startup-id feh --bg-fill /home/natis/Wallpapers/dark-japanese.png
 exec --no-startup-id picom --config ~/.config/picom/picom.conf
 exec --no-startup-id sh -c "sleep 1 && setxkbmap -layout us,lt -option grp:alt_shift_toggle"
 exec_always --no-startup-id sh $HOME/.config/polybar/launch.sh
 exec --no-startup-id setxkbmap -option "caps:swapescape"
 exec --no-startup-id xset s off -dpms
+exec --no-startup-id feh --bg-fill ~/Wallpapers/dark-japanese.png
+
