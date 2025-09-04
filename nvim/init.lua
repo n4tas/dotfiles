@@ -63,13 +63,13 @@ vim.o.confirm = true
 --  See `:help hlsearch`
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
-vim.api.nvim_set_keymap("v", "X", '"_d', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("v", "x", '"_d', { noremap = true, silent = true })
 
 -- Diagnostic keymaps
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
-vim.keymap.set("n", "<leader>tt", ":terminal<CR>", { desc = "Open terminal in buffer" })
-vim.keymap.set("n", "<leader>tv", ":vsplit | terminal<CR>", { desc = "Terminal (vertical split)" })
-vim.keymap.set("n", "<leader>ts", ":split | terminal<CR>", { desc = "Terminal (horizontal split)" })
+-- vim.keymap.set("n", "<leader>tt", ":terminal<CR>", { desc = "Open terminal in buffer" })
+-- vim.keymap.set("n", "<leader>tv", ":vsplit | terminal<CR>", { desc = "Terminal (vertical split)" })
+-- vim.keymap.set("n", "<leader>ts", ":split | terminal<CR>", { desc = "Terminal (horizontal split)" })
 
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
@@ -159,6 +159,32 @@ require("lazy").setup({
 			vim.cmd.colorscheme("gruvbox")
 		end,
 	},
+	{
+		"akinsho/toggleterm.nvim",
+		version = "*",
+		config = function()
+			require("toggleterm").setup({
+				direction = "float", -- opens terminal as floating window
+				open_mapping = [[<C-\>]], -- toggle terminal with Ctrl + \
+				start_in_insert = true, -- always start in insert mode
+				float_opts = {
+					border = "curved", -- other options: single, double, shadow
+					width = 100,
+					height = 30,
+					winblend = 0,
+				},
+			})
+
+			vim.keymap.set(
+				"n",
+				"<leader>th",
+				"<cmd>ToggleTerm direction=horizontal<CR>",
+				{ desc = "Terminal horizontal" }
+			)
+			vim.keymap.set("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical<CR>", { desc = "Terminal vertical" })
+		end,
+	},
+
 	{
 		"nvim-flutter/flutter-tools.nvim",
 		lazy = false,
@@ -275,6 +301,10 @@ require("lazy").setup({
 				window = {
 					position = "left",
 					width = 30,
+					mappings = {
+						-- 🔥 your custom keybind to jump to the selected folder
+						["<S-CR>"] = "set_root", -- Use any key you want here
+					},
 				},
 			})
 			vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "Toggle Neo-tree Explorer" })
