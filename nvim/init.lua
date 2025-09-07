@@ -74,11 +74,16 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagn
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+vim.keymap.set("n", "<leader>tt", ":terminal<CR>", { desc = "Open terminal in buffer" })
 
 vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
 vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
+
+vim.keymap.set("n", "<leader>bp", function()
+	vim.cmd("cd ~/.config/nvim/ | enew")
+end, { desc = "Buffer in nvim config" })
 
 vim.opt.autochdir = false
 
@@ -100,24 +105,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 		vim.hl.on_yank()
 	end,
 })
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "c", "cpp", "h", "hpp" },
-	callback = function()
-		vim.bo.expandtab = false -- Use tabs, not spaces
-		vim.bo.tabstop = 4 -- Tab visually = 4 spaces
-		vim.bo.softtabstop = 4 -- <Tab>/<BS> = 4 columns
-		vim.bo.shiftwidth = 4 -- Auto-indent = 4 columns
-	end,
-})
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "javascript", "typescript", "typescriptreact", "javascriptreact", "svelte" },
-	callback = function()
-		vim.bo.tabstop = 2
-		vim.bo.shiftwidth = 2
-		vim.bo.softtabstop = 2
-		vim.bo.expandtab = true
-	end,
-})
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -134,14 +121,46 @@ end
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
+vim.api.nvim_create_autocmd("ColorScheme", {
+	pattern = "gruvbox",
+	callback = function()
+		require("gruvbox").setup({
+			transparent_mode = true,
+			contrast = "soft",
+			overrides = {
+				SignColumn = { bg = "NONE" },
+				Normal = { bg = "NONE" },
+				NormalNC = { bg = "NONE" },
+				NormalFloat = { bg = "NONE" },
+				FloatBorder = { bg = "NONE" },
+				VertSplit = { bg = "NONE" },
+				StatusLine = { bg = "NONE" },
+				StatusLineNC = { bg = "NONE" },
+				LineNr = { bg = "NONE" },
+				EndOfBuffer = { bg = "NONE" },
+			},
+		})
+	end,
+})
+
 require("lazy").setup({
+	{
+		"NMAC427/guess-indent.nvim",
+		config = function()
+			require("guess-indent").setup({
+				auto_cmd = true, -- Automatically run on BufRead
+				override_editorconfig = false, -- respect .editorconfig if present
+				filetype_exclude = { "neo-tree", "TelescopePrompt", "dashboard" },
+			})
+		end,
+	},
 	{
 		"ellisonleao/gruvbox.nvim",
 		priority = 1000,
 		config = function()
 			require("gruvbox").setup({
 				transparent_mode = true, -- enable transparency
-				contrast = "hard", -- options: "soft", "medium", "hard"
+				contrast = "soft", -- options: "soft", "medium", "hard"
 				overrides = {
 					SignColumn = { bg = "NONE" },
 					Normal = { bg = "NONE" },
@@ -155,7 +174,6 @@ require("lazy").setup({
 					EndOfBuffer = { bg = "NONE" },
 				},
 			})
-
 			vim.cmd.colorscheme("gruvbox")
 		end,
 	},
@@ -229,15 +247,14 @@ require("lazy").setup({
 			end, { desc = "[B]uffer [D]elete (safe)" })
 		end,
 	},
-	"NMAC427/guess-indent.nvim", -- Detect tabstop and shiftwidth automatically
 	{
 		"folke/snacks.nvim",
-		---@type snacks.Config
 		opts = {
 			dashboard = {},
 			scroll = {},
 		},
 	},
+
 	{
 		"zbirenbaum/copilot.lua",
 		cmd = "Copilot",
@@ -294,9 +311,6 @@ require("lazy").setup({
 						enabled = false, -- ⛔ No auto-root-following
 					},
 					use_libuv_file_watcher = true,
-					filtered_items = {
-						hide_gitignored = false,
-					},
 				},
 				window = {
 					position = "left",
@@ -380,9 +394,6 @@ require("lazy").setup({
 				{ "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
 			},
 		},
-	},
-	{
-		"pangloss/vim-javascript",
 	},
 	{ -- Fuzzy Finder (files, lsp, etc)
 		"nvim-telescope/telescope.nvim",
@@ -551,15 +562,6 @@ require("lazy").setup({
 							buffer = event.buf,
 							group = highlight_augroup,
 							callback = vim.lsp.buf.clear_references,
-						})
-						vim.api.nvim_create_autocmd("FileType", {
-							pattern = "c",
-							callback = function()
-								vim.bo.tabstop = 4 -- Number of spaces a tab character shows as
-								vim.bo.shiftwidth = 4 -- Number of spaces used for each indentation level
-								vim.bo.softtabstop = 4 -- Number of spaces for tab in insert mode
-								vim.bo.expandtab = false -- Use real tab characters (not spaces)
-							end,
 						})
 
 						vim.api.nvim_create_autocmd("LspDetach", {
