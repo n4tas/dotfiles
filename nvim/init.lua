@@ -106,21 +106,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 })
 
--- [[ Install `lazy.nvim` plugin manager ]]
---    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-	local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-	if vim.v.shell_error ~= 0 then
-		error("Error cloning lazy.nvim:\n" .. out)
-	end
-end
-
----@type vim.Option
-local rtp = vim.opt.rtp
-rtp:prepend(lazypath)
-
 vim.api.nvim_create_autocmd("ColorScheme", {
 	pattern = "gruvbox",
 	callback = function()
@@ -142,6 +127,21 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 		})
 	end,
 })
+
+-- [[ Install `lazy.nvim` plugin manager ]]
+--    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+	local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+	if vim.v.shell_error ~= 0 then
+		error("Error cloning lazy.nvim:\n" .. out)
+	end
+end
+
+---@type vim.Option
+local rtp = vim.opt.rtp
+rtp:prepend(lazypath)
 
 require("lazy").setup({
 	{
@@ -248,10 +248,45 @@ require("lazy").setup({
 		end,
 	},
 	{
+		"numToStr/Comment.nvim",
+		event = "VeryLazy",
+		config = function()
+			require("Comment").setup({
+				-- Add a space between comment and the line
+				padding = true,
+
+				-- Whether the cursor should stay in place
+				sticky = true,
+
+				-- Lines to ignore when (un)commenting
+				ignore = nil,
+
+				-- Enable keybindings
+				mappings = {
+					basic = true, -- `gcc`, `gbc`
+					extra = true, -- `gco`, `gcO`, `gcA`
+					extended = false, -- `g>`, `g<` for block selection (optional)
+				},
+
+				-- Pre-hook for integrating with ts-context-commentstring or other custom logic
+				pre_hook = nil,
+				post_hook = nil,
+			})
+		end,
+	},
+	{
 		"folke/snacks.nvim",
 		opts = {
 			dashboard = {},
 			scroll = {},
+			dim = {
+				enabled = true, -- Enable dimming
+				alpha = 0.25, -- Opacity of dimmed windows (0.0 to 1.0)
+				show = 0.9, -- Opacity of the focused window
+				blend = 0.5, -- How much to blend with background
+				exclude = {}, -- List of filetypes or buftypes to exclude
+				priority = 100, -- Highlight priority
+			},
 		},
 	},
 
