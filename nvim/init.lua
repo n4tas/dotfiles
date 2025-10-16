@@ -80,6 +80,7 @@ vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left wind
 vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
+vim.keymap.set("n", "<C-a>", "ggVG", { desc = "Select all" })
 
 vim.keymap.set("n", "<leader>bp", function()
 	vim.cmd("cd ~/.config/nvim/ | enew")
@@ -144,15 +145,17 @@ local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
 require("lazy").setup({
+
 	{
-		"NMAC427/guess-indent.nvim",
-		config = function()
-			require("guess-indent").setup({
-				auto_cmd = true, -- Automatically run on BufRead
-				override_editorconfig = false, -- respect .editorconfig if present
-				filetype_exclude = { "neo-tree", "TelescopePrompt", "dashboard" },
-			})
-		end,
+		"tpope/vim-sleuth",
+		lazy = false, -- load on startup
+	},
+	{
+		"3rd/image.nvim",
+		build = false, -- so that it doesn't build the rock https://github.com/3rd/image.nvim/issues/91#issuecomment-2453430239
+		opts = {
+			processor = "magick_cli",
+		},
 	},
 	{
 		"ellisonleao/gruvbox.nvim",
@@ -276,17 +279,21 @@ require("lazy").setup({
 	},
 	{
 		"folke/snacks.nvim",
+		event = "VeryLazy",
 		opts = {
+			statuscolumn = {
+				enabled = true,
+				-- Customize each part of the statuscolumn
+				segments = {
+					{ text = { "%s" }, click = "SnacksSign" }, -- signs (e.g. git, diagnostics)
+					{ text = { "%C" }, click = "SnacksFold" }, -- fold column
+					{ text = { " %l" }, click = "SnacksLineNr" }, -- line number
+				},
+				-- Optional: override default behavior
+				setopt = true, -- automatically set 'statuscolumn'
+			},
 			dashboard = {},
 			scroll = {},
-			dim = {
-				enabled = true, -- Enable dimming
-				alpha = 0.25, -- Opacity of dimmed windows (0.0 to 1.0)
-				show = 0.9, -- Opacity of the focused window
-				blend = 0.5, -- How much to blend with background
-				exclude = {}, -- List of filetypes or buftypes to exclude
-				priority = 100, -- Highlight priority
-			},
 		},
 	},
 
@@ -531,11 +538,6 @@ require("lazy").setup({
 			"saghen/blink.cmp",
 		},
 		config = function()
-			require("lspconfig").clangd.setup({
-				cmd = { "clangd", "--compile-commands-dir=build" },
-				root_dir = require("lspconfig.util").root_pattern("build/compile_commands.json", ".clangd", ".git"),
-			})
-
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
 				callback = function(event)
@@ -879,4 +881,43 @@ require("lazy").setup({
 			lazy = "💤 ",
 		},
 	},
+})
+require("image").setup({
+	backend = "kitty", -- or "ueberzug" or "sixel"
+	processor = "magick_cli", -- or "magick_rock"
+	integrations = {
+		markdown = {
+			enabled = true,
+			clear_in_insert_mode = false,
+			download_remote_images = true,
+			only_render_image_at_cursor = false,
+			only_render_image_at_cursor_mode = "popup", -- or "inline"
+			floating_windows = false, -- if true, images will be rendered in floating markdown windows
+			filetypes = { "markdown", "vimwiki" }, -- markdown extensions (ie. quarto) can go here
+		},
+		neorg = {
+			enabled = true,
+			filetypes = { "norg" },
+		},
+		typst = {
+			enabled = true,
+			filetypes = { "typst" },
+		},
+		html = {
+			enabled = false,
+		},
+		css = {
+			enabled = false,
+		},
+	},
+	max_width = nil,
+	max_height = nil,
+	max_width_window_percentage = nil,
+	max_height_window_percentage = 50,
+	scale_factor = 1.0,
+	window_overlap_clear_enabled = false, -- toggles images when windows are overlapped
+	window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "snacks_notif", "scrollview", "scrollview_sign" },
+	editor_only_render_when_focused = false, -- auto show/hide images when the editor gains/looses focus
+	tmux_show_only_in_active_window = false, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
+	hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" }, -- render image files as images when opened
 })

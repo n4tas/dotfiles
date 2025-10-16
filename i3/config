@@ -184,9 +184,9 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 
 workspace "1" output HDMI-1-0
-workspace "2" output DisplayPort-1
 workspace "3" output DisplayPort-1
 workspace "4" output HDMI-1-0
+workspace "9" output eDP
 
 # eDP desine laptopas
 # HDMI_1-0 vidurys 
