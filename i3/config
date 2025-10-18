@@ -223,4 +223,4 @@ exec --no-startup-id xset dpms 600 600 600
 exec --no-startup-id sudo brightnessctl set 90%
 exec --no-startup-id sudo powertop --auto-tune
 exec --no-startup-id feh --bg-fill ~/Wallpapers/dark-japanese.png
-
+exec --no-startup-id /home/natis/Scripts/i3-battery-popup
