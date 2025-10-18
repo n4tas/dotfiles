@@ -150,6 +150,31 @@ require("lazy").setup({
 		"tpope/vim-sleuth",
 		lazy = false, -- load on startup
 	},
+
+	{
+		"akinsho/flutter-tools.nvim",
+		ft = { "dart" },
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"neovim/nvim-lspconfig", -- ensure lspconfig is present
+			"stevearc/dressing.nvim", -- optional
+			"mfussenegger/nvim-dap", -- optional, for debugging
+		},
+		config = function()
+			require("flutter-tools").setup({
+				flutter_path = "/home/natis/work/libs/flutter/bin/flutter",
+				widget_guides = { enabled = true },
+				dev_log = { enabled = true, open_cmd = "tabedit" },
+				dev_tools = { autostart = true },
+				lsp = {
+					-- add completion caps if you use nvim-cmp
+					-- capabilities = require("cmp_nvim_lsp").default_capabilities(),
+				},
+				debugger = { enabled = true, run_via_dap = true },
+			})
+		end,
+	},
+
 	{
 		"3rd/image.nvim",
 		build = false, -- so that it doesn't build the rock https://github.com/3rd/image.nvim/issues/91#issuecomment-2453430239
@@ -204,16 +229,6 @@ require("lazy").setup({
 			)
 			vim.keymap.set("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical<CR>", { desc = "Terminal vertical" })
 		end,
-	},
-
-	{
-		"nvim-flutter/flutter-tools.nvim",
-		lazy = false,
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"stevearc/dressing.nvim", -- optional for vim.ui.select
-		},
-		config = true,
 	},
 	{
 		"akinsho/bufferline.nvim",
