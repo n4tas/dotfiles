@@ -150,7 +150,17 @@ require("lazy").setup({
 		"tpope/vim-sleuth",
 		lazy = false, -- load on startup
 	},
-
+	{
+		"navarasu/onedark.nvim",
+		lazy = false, -- load immediately
+		priority = 1000, -- make sure it loads before other plugins
+		config = function()
+			require("onedark").setup({
+				style = "darker", -- options: dark, darker, cool, deep, warm, warmer, light
+			})
+			require("onedark").load()
+		end,
+	},
 	{
 		"akinsho/flutter-tools.nvim",
 		ft = { "dart" },
