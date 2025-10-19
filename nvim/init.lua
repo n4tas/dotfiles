@@ -302,7 +302,7 @@ require("lazy").setup({
 					EndOfBuffer = { bg = "NONE" },
 				},
 			})
-			vim.cmd.colorscheme("gruvbox")
+			vim.cmd.colorscheme("onedark")
 		end,
 	},
 	{
@@ -479,6 +479,43 @@ require("lazy").setup({
 				},
 			})
 			vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "Toggle Neo-tree Explorer" })
+			local neo_tree_fullscreen_state = {
+				was_fullscreen = false,
+				previous_winview = nil,
+				previous_buf = nil,
+			}
+
+			vim.keymap.set("n", "<leader>E", function()
+				local winid = vim.fn.bufwinid("neo-tree filesystem [1]")
+				local state = neo_tree_fullscreen_state
+
+				if not state.was_fullscreen then
+					-- Save current buffer + view
+					state.previous_buf = vim.api.nvim_get_current_buf()
+					state.previous_winview = vim.fn.winsaveview()
+
+					-- Close other windows and open Neo-tree fullscreen
+					vim.cmd("only")
+					vim.cmd("Neotree reveal left")
+					vim.cmd("vertical resize " .. vim.o.columns)
+
+					state.was_fullscreen = true
+				else
+					-- Restore previous buffer and layout
+					vim.cmd("bd") -- close Neo-tree
+					vim.cmd("enew") -- open new empty buffer to avoid error if previous closed
+
+					if state.previous_buf and vim.api.nvim_buf_is_valid(state.previous_buf) then
+						vim.cmd("buffer " .. state.previous_buf)
+					end
+
+					if state.previous_winview then
+						vim.fn.winrestview(state.previous_winview)
+					end
+
+					state.was_fullscreen = false
+				end
+			end, { desc = "Toggle Neo-tree fullscreen" })
 		end,
 	},
 	--
