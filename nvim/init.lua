@@ -151,6 +151,11 @@ require("lazy").setup({
 		lazy = false, -- load on startup
 	},
 	{
+		"tpope/vim-dadbod",
+		lazy = false,
+	},
+	{ "kristijanhusak/vim-dadbod-completion", lazy = false },
+	{
 		"navarasu/onedark.nvim",
 		lazy = false, -- load immediately
 		priority = 1000, -- make sure it loads before other plugins
