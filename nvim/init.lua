@@ -64,6 +64,7 @@ vim.o.confirm = true
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
 vim.api.nvim_set_keymap("v", "x", '"_d', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "x", '"_x', { noremap = true, silent = true })
 
 -- Diagnostic keymaps
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
@@ -82,9 +83,46 @@ vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower win
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 vim.keymap.set("n", "<C-a>", "ggVG", { desc = "Select all" })
 
-vim.keymap.set("n", "<leader>bp", function()
-	vim.cmd("cd ~/.config/nvim/ | enew")
-end, { desc = "Buffer in nvim config" })
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "python",
+	callback = function()
+		vim.bo.expandtab = true -- Use spaces instead of tabs
+		vim.bo.shiftwidth = 4 -- Indent by 4 spaces
+		vim.bo.tabstop = 4 -- Tab key inserts 4 spaces
+		vim.bo.softtabstop = 4 -- Backspace deletes 4 spaces
+		vim.bo.textwidth = 88 -- PEP 8 recommends 79–88 cols
+		vim.bo.autoindent = true -- Copy indent from current line
+		vim.bo.smartindent = true -- Smart indentation for blocks
+		vim.bo.commentstring = "# %s" -- Python comment style
+	end,
+	desc = "Set Python indentation (PEP8: 4 spaces)",
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "c", "cpp", "h", "hpp" },
+	callback = function()
+		vim.bo.expandtab = false -- Use hard tabs (common in C/C++)
+		vim.bo.shiftwidth = 4 -- Indent width of 4 spaces
+		vim.bo.tabstop = 4 -- Tabs are 4 spaces wide
+		vim.bo.softtabstop = 4 -- Backspace deletes 1 tab = 4 spaces
+		vim.bo.cindent = true -- Enable C-style indentation
+		vim.bo.textwidth = 100 -- Wrap lines at 100 columns (optional)
+		vim.bo.commentstring = "// %s"
+	end,
+	desc = "Set C/C++ indentation to 4-space tabs",
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "dart",
+	callback = function()
+		vim.bo.expandtab = true -- Use spaces instead of tabs
+		vim.bo.shiftwidth = 2 -- Indent by 2 spaces
+		vim.bo.tabstop = 2 -- A tab counts for 2 spaces
+		vim.bo.softtabstop = 2 -- Backspace deletes 2 spaces
+		vim.bo.textwidth = 80 -- Optional: wrap at 80 cols
+	end,
+	desc = "Set Dart indentation to 2 spaces",
+})
 
 vim.opt.autochdir = false
 
@@ -97,8 +135,8 @@ vim.opt.autochdir = false
 -- Resize current window width
 vim.keymap.set("n", "<leader>-", ":vertical resize -10<CR>", { desc = "Decrease window width" })
 vim.keymap.set("n", "<leader>=", ":vertical resize +10<CR>", { desc = "Increase window width" })
-vim.keymap.set("n", "<leader><Up>", "resize -10<CR>", { desc = "Decrease window height" })
-vim.keymap.set("n", "<leader><Down>", "resize +10<CR>", { desc = "Increase window height" })
+vim.keymap.set("n", "<leader><Up>", ":resize -10<CR>", { desc = "Decrease window height" })
+vim.keymap.set("n", "<leader><Down>", ":resize +10<CR>", { desc = "Increase window height" })
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight when yanking (copying) text",
 	group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
@@ -258,13 +296,6 @@ require("lazy").setup({
 						virtual_text = true, -- show the highlight using virtual text
 						virtual_text_str = "■", -- the virtual text character to highlight
 					},
-					on_attach = my_custom_on_attach,
-					capabilities = my_custom_capabilities, -- e.g. lsp_status capabilities
-					--- OR you can specify a function to deactivate or change or control how the config is created
-					capabilities = function(config)
-						config.specificThingIDontWant = false
-						return config
-					end,
 					-- see the link below for details on each option:
 					-- https://github.com/dart-lang/sdk/blob/master/pkg/analysis_server/tool/lsp_spec/README.md#client-workspace-configuration
 					settings = {
@@ -307,7 +338,6 @@ require("lazy").setup({
 					EndOfBuffer = { bg = "NONE" },
 				},
 			})
-			vim.cmd.colorscheme("onedark")
 		end,
 	},
 	{
@@ -451,11 +481,6 @@ require("lazy").setup({
 			require("nvim-autopairs").setup(opts)
 
 			-- integrate with blink.cmp (autocompletion confirm = auto pair close)
-			local cmp_status, cmp = pcall(require, "cmp")
-			if cmp_status then
-				local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-				cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
-			end
 		end,
 	},
 	{
@@ -1038,42 +1063,6 @@ require("lazy").setup({
 		},
 	},
 })
-require("image").setup({
-	backend = "kitty", -- or "ueberzug" or "sixel"
-	processor = "magick_cli", -- or "magick_rock"
-	integrations = {
-		markdown = {
-			enabled = true,
-			clear_in_insert_mode = false,
-			download_remote_images = true,
-			only_render_image_at_cursor = false,
-			only_render_image_at_cursor_mode = "popup", -- or "inline"
-			floating_windows = false, -- if true, images will be rendered in floating markdown windows
-			filetypes = { "markdown", "vimwiki" }, -- markdown extensions (ie. quarto) can go here
-		},
-		neorg = {
-			enabled = true,
-			filetypes = { "norg" },
-		},
-		typst = {
-			enabled = true,
-			filetypes = { "typst" },
-		},
-		html = {
-			enabled = false,
-		},
-		css = {
-			enabled = false,
-		},
-	},
-	max_width = nil,
-	max_height = nil,
-	max_width_window_percentage = nil,
-	max_height_window_percentage = 50,
-	scale_factor = 1.0,
-	window_overlap_clear_enabled = false, -- toggles images when windows are overlapped
-	window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "snacks_notif", "scrollview", "scrollview_sign" },
-	editor_only_render_when_focused = false, -- auto show/hide images when the editor gains/looses focus
-	tmux_show_only_in_active_window = false, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
-	hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" }, -- render image files as images when opened
-})
+vim.g.transparent = true
+require("onedark").setup({ style = "darker", transparent = vim.g.transparent })
+require("onedark").load()
