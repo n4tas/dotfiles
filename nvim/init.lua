@@ -71,16 +71,31 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagn
 -- vim.keymap.set("n", "<leader>tt", ":terminal<CR>", { desc = "Open terminal in buffer" })
 -- vim.keymap.set("n", "<leader>tv", ":vsplit | terminal<CR>", { desc = "Terminal (vertical split)" })
 -- vim.keymap.set("n", "<leader>ts", ":split | terminal<CR>", { desc = "Terminal (horizontal split)" })
+local move_opts = { noremap = true, silent = true, desc = "Movement remap" }
 
+vim.keymap.set("n", "j", "h", move_opts) -- left
+vim.keymap.set("n", "k", "j", move_opts) -- down
+vim.keymap.set("n", "l", "k", move_opts) -- up
+vim.keymap.set("n", ";", "l", move_opts) -- right
+
+vim.keymap.set("v", "j", "h", move_opts)
+vim.keymap.set("v", "k", "j", move_opts)
+vim.keymap.set("v", "l", "k", move_opts)
+vim.keymap.set("v", ";", "l", move_opts)
+
+vim.keymap.set("o", "j", "h", move_opts)
+vim.keymap.set("o", "k", "j", move_opts)
+vim.keymap.set("o", "l", "k", move_opts)
+vim.keymap.set("o", ";", "l", move_opts)
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 vim.keymap.set("n", "<leader>tt", ":terminal<CR>", { desc = "Open terminal in buffer" })
 
-vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
-vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
-vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
-vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
+vim.keymap.set("n", "<C-j>", "<C-w>h", { noremap = true, silent = true, desc = "Move focus to left window" })
+vim.keymap.set("n", "<C-;>", "<C-w>l", { noremap = true, silent = true, desc = "Move focus to right window" })
+vim.keymap.set("n", "<C-k>", "<C-w>j", { noremap = true, silent = true, desc = "Move focus to lower window" })
+vim.keymap.set("n", "<C-l>", "<C-w>k", { noremap = true, silent = true, desc = "Move focus to upper window" })
 vim.keymap.set("n", "<C-a>", "ggVG", { desc = "Select all" })
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -102,11 +117,11 @@ vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "c", "cpp", "h", "hpp" },
 	callback = function()
 		vim.bo.expandtab = false -- Use hard tabs (common in C/C++)
-		vim.bo.shiftwidth = 4 -- Indent width of 4 spaces
 		vim.bo.tabstop = 4 -- Tabs are 4 spaces wide
 		vim.bo.softtabstop = 4 -- Backspace deletes 1 tab = 4 spaces
 		vim.bo.cindent = true -- Enable C-style indentation
 		vim.bo.textwidth = 100 -- Wrap lines at 100 columns (optional)
+		vim.bo.shiftwidth = 4 -- Indent width of 4 spaces
 		vim.bo.commentstring = "// %s"
 	end,
 	desc = "Set C/C++ indentation to 4-space tabs",
@@ -127,10 +142,6 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.opt.autochdir = false
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
--- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
--- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
--- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
--- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
 -- Resize current window width
 vim.keymap.set("n", "<leader>-", ":vertical resize -10<CR>", { desc = "Decrease window width" })
@@ -188,6 +199,7 @@ require("lazy").setup({
 		"tpope/vim-sleuth",
 		lazy = false, -- load on startup
 	},
+	{ "lambdalisue/vim-suda", lazy = false },
 	{
 		"tpope/vim-dadbod",
 		lazy = false,
@@ -446,27 +458,6 @@ require("lazy").setup({
 			scroll = {},
 		},
 	},
-
-	{
-		"zbirenbaum/copilot.lua",
-		cmd = "Copilot",
-		event = "InsertEnter",
-		config = function()
-			require("copilot").setup({
-				suggestion = {
-					auto_trigger = true,
-					keymap = {
-						accept = "<M-y>",
-						next = "<M-]>",
-						prev = "<M-[>",
-						dismiss = "<C-]>",
-					},
-				},
-				panel = { enabled = false }, -- disable side panel
-			})
-		end,
-	},
-
 	{
 		"tpope/vim-fugitive",
 		cmd = { "Git", "G", "Gdiffsplit", "Gvdiffsplit" },
@@ -504,6 +495,17 @@ require("lazy").setup({
 					width = 30,
 					mappings = {
 						-- 🔥 your custom keybind to jump to the selected folder
+						--  mappings = {
+						["j"] = "close",
+						["k"] = "next_line",
+						["l"] = "prev_line",
+						[";"] = "open",
+						["<CR>"] = "open",
+						["h"] = "noop",
+						["J"] = "noop",
+						["K"] = "noop",
+						["L"] = "noop",
+
 						["<S-CR>"] = "set_root", -- Use any key you want here
 					},
 				},

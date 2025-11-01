@@ -64,16 +64,16 @@ bindcode $mod+40 exec "rofi -modi drun,run -show drun -theme gruvbox-light"
 # bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
 
 # change focus
-bindsym $mod+h focus left
+bindsym $mod+j focus left
 bindsym $mod+k focus down
-bindsym $mod+j focus up
-bindsym $mod+l focus right
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
 
 # move focused window
-bindsym $mod+Shift+h move left
-bindsym $mod+Shift+j move down
-bindsym $mod+Shift+k move up
-bindsym $mod+Shift+l move right
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
@@ -82,7 +82,7 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
-bindsym $mod+g split h
+bindsym $mod+h split h
 
 # split in vertical orientation
 bindsym $mod+v split v
@@ -224,4 +224,4 @@ exec --no-startup-id xset dpms 600 600 600
 exec --no-startup-id sudo brightnessctl set 90%
 exec --no-startup-id sudo powertop --auto-tune
 exec --no-startup-id feh --bg-fill ~/Wallpapers/dark-japanese.png
-exec --no-startup-id bash -c 'while true; do ~/Scripts/battery_warn.sh; sleep 60; done'
+exec --no-startup-id bash -c 'while truesemicolon do ~/Scripts/battery_warn.sh; sleep 60; done'
