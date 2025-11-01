@@ -177,7 +177,6 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 		})
 	end,
 })
-
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -193,6 +192,7 @@ end
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
+-- Toggle Avante window with <Space>r
 require("lazy").setup({
 
 	{
@@ -204,7 +204,66 @@ require("lazy").setup({
 		"tpope/vim-dadbod",
 		lazy = false,
 	},
+	{
+		"coder/claudecode.nvim",
+		dependencies = { "folke/snacks.nvim" },
+		config = true,
+		keys = {
+			{ "<leader>a", nil, desc = "AI/Claude Code" },
+			{ "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
+			{ "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
+			{ "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
+			{ "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+			{ "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
+			{ "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
+			{ "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+			{
+				"<leader>as",
+				"<cmd>ClaudeCodeTreeAdd<cr>",
+				desc = "Add file",
+				ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw" },
+			},
+			-- Diff management
+			{ "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+			{ "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
+		},
+	},
 	{ "kristijanhusak/vim-dadbod-completion", lazy = false },
+	{
+		"EdenEast/nightfox.nvim",
+		lazy = false, -- load immediately
+		priority = 1000, -- make sure it loads before everything else
+		config = function()
+			require("nightfox").setup({
+				options = {
+					transparent = true, -- if you want transparent background
+					terminal_colors = true,
+					styles = {
+						comments = "italic",
+						keywords = "bold",
+						functions = "italic,bold",
+						types = "italic,bold",
+					},
+				},
+				palettes = {}, -- you can override specific colors if you want
+				specs = {}, -- fine-tune highlight groups
+				groups = {}, -- extra highlight groups
+			})
+
+			-- Set colorscheme
+			vim.cmd("colorscheme carbonfox")
+		end,
+	},
+	{
+		"projekt0n/github-nvim-theme",
+		name = "github-theme",
+		lazy = false, -- make sure we load this during startup if it is your main colorscheme
+		priority = 1000, -- make sure to load this before all the other start plugins
+		config = function()
+			require("github-theme").setup({})
+			vim.cmd("colorscheme github_dark_high_contrast")
+		end,
+	},
 	{
 		"navarasu/onedark.nvim",
 		lazy = false, -- load immediately
@@ -213,7 +272,6 @@ require("lazy").setup({
 			require("onedark").setup({
 				style = "darker", -- options: dark, darker, cool, deep, warm, warmer, light
 			})
-			require("onedark").load()
 		end,
 	},
 	{
@@ -496,11 +554,12 @@ require("lazy").setup({
 					mappings = {
 						-- 🔥 your custom keybind to jump to the selected folder
 						--  mappings = {
-						["j"] = "close",
-						["k"] = "next_line",
-						["l"] = "prev_line",
-						[";"] = "open",
-						["<CR>"] = "open",
+						["j"] = "close_node", -- left / collapse
+						["k"] = "noop", -- move down
+						["l"] = "noop", -- move up
+						[";"] = "noop", -- right / expand
+
+						["<CR>"] = "open", -- keep Enter for open
 						["h"] = "noop",
 						["J"] = "noop",
 						["K"] = "noop",
@@ -1066,5 +1125,3 @@ require("lazy").setup({
 	},
 })
 vim.g.transparent = true
-require("onedark").setup({ style = "darker", transparent = vim.g.transparent })
-require("onedark").load()

@@ -223,5 +223,5 @@ exec --no-startup-id xset s 300 300
 exec --no-startup-id xset dpms 600 600 600
 exec --no-startup-id sudo brightnessctl set 90%
 exec --no-startup-id sudo powertop --auto-tune
-exec --no-startup-id feh --bg-fill ~/Wallpapers/dark-japanese.png
+exec --no-startup-id feh --bg-fill ~/Wallpapers/jvscholz.jpg
 exec --no-startup-id bash -c 'while truesemicolon do ~/Scripts/battery_warn.sh; sleep 60; done'
