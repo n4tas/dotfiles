@@ -156,28 +156,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 })
 
-vim.api.nvim_create_autocmd("ColorScheme", {
-	pattern = "gruvbox",
-	callback = function()
-		require("gruvbox").setup({
-			transparent_mode = true,
-			contrast = "soft",
-			overrides = {
-				SignColumn = { bg = "NONE" },
-				Normal = { bg = "NONE" },
-				NormalNC = { bg = "NONE" },
-				NormalFloat = { bg = "NONE" },
-				FloatBorder = { bg = "NONE" },
-				VertSplit = { bg = "NONE" },
-				StatusLine = { bg = "NONE" },
-				StatusLineNC = { bg = "NONE" },
-				LineNr = { bg = "NONE" },
-				EndOfBuffer = { bg = "NONE" },
-			},
-		})
-	end,
-})
-
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -193,8 +171,15 @@ end
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
+-- Toggle Avante window with <Space>r
 require("lazy").setup({
-
+	-- plugins
+	{
+		"catgoose/nvim-colorizer.lua",
+		event = "BufReadPre",
+		opts = { -- set to setup table
+		},
+	},
 	{
 		"tpope/vim-sleuth",
 		lazy = false, -- load on startup
@@ -204,18 +189,32 @@ require("lazy").setup({
 		"tpope/vim-dadbod",
 		lazy = false,
 	},
-	{ "kristijanhusak/vim-dadbod-completion", lazy = false },
+	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 	{
-		"navarasu/onedark.nvim",
-		lazy = false, -- load immediately
-		priority = 1000, -- make sure it loads before other plugins
-		config = function()
-			require("onedark").setup({
-				style = "darker", -- options: dark, darker, cool, deep, warm, warmer, light
-			})
-			require("onedark").load()
-		end,
+		"coder/claudecode.nvim",
+		dependencies = { "folke/snacks.nvim" },
+		config = true,
+		keys = {
+			{ "<leader>a", nil, desc = "AI/Claude Code" },
+			{ "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
+			{ "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
+			{ "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
+			{ "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+			{ "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
+			{ "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
+			{ "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+			{
+				"<leader>as",
+				"<cmd>ClaudeCodeTreeAdd<cr>",
+				desc = "Add file",
+				ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw" },
+			},
+			-- Diff management
+			{ "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+			{ "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
+		},
 	},
+	{ "kristijanhusak/vim-dadbod-completion", lazy = false },
 	{
 		"akinsho/flutter-tools.nvim",
 		ft = { "dart" },
@@ -333,24 +332,6 @@ require("lazy").setup({
 	{
 		"ellisonleao/gruvbox.nvim",
 		priority = 1000,
-		config = function()
-			require("gruvbox").setup({
-				transparent_mode = true, -- enable transparency
-				contrast = "soft", -- options: "soft", "medium", "hard"
-				overrides = {
-					SignColumn = { bg = "NONE" },
-					Normal = { bg = "NONE" },
-					NormalNC = { bg = "NONE" },
-					NormalFloat = { bg = "NONE" },
-					FloatBorder = { bg = "NONE" },
-					VertSplit = { bg = "NONE" },
-					StatusLine = { bg = "NONE" },
-					StatusLineNC = { bg = "NONE" },
-					LineNr = { bg = "NONE" },
-					EndOfBuffer = { bg = "NONE" },
-				},
-			})
-		end,
 	},
 	{
 		"akinsho/toggleterm.nvim",
@@ -496,11 +477,12 @@ require("lazy").setup({
 					mappings = {
 						-- 🔥 your custom keybind to jump to the selected folder
 						--  mappings = {
-						["j"] = "close",
-						["k"] = "next_line",
-						["l"] = "prev_line",
-						[";"] = "open",
-						["<CR>"] = "open",
+						["j"] = "close_node", -- left / collapse
+						["k"] = "noop", -- move down
+						["l"] = "noop", -- move up
+						[";"] = "noop", -- right / expand
+
+						["<CR>"] = "open", -- keep Enter for open
 						["h"] = "noop",
 						["J"] = "noop",
 						["K"] = "noop",
@@ -646,6 +628,7 @@ require("lazy").setup({
 		},
 		config = function()
 			require("telescope").setup({
+				initial_mode = "normal",
 				extensions = {
 					["ui-select"] = {
 						require("telescope.themes").get_dropdown(),
@@ -952,6 +935,11 @@ require("lazy").setup({
 		opts = {
 			keymap = {
 				preset = "default",
+				["<Tab>"] = { "accept", "fallback" },
+				["<S-Tab>"] = { "select_prev", "fallback" },
+
+				-- If you want enter to simply confirm too:
+				["<CR>"] = { "accept", "fallback" },
 			},
 			appearance = {
 				nerd_font_variant = "mono",
@@ -971,27 +959,6 @@ require("lazy").setup({
 			fuzzy = { implementation = "lua" },
 			signature = { enabled = true },
 		},
-	},
-
-	{ -- You can easily change to a different colorscheme.
-		"folke/tokyonight.nvim",
-		priority = 1000, -- Make sure to load this before all the other start plugins.
-		config = function()
-			---@diagnostic disable-next-line: missing-fields
-			require("tokyonight").setup({
-				styles = {
-					comments = { italic = false }, -- Disable italics in comments
-				},
-			})
-			vim.cmd([[
-			      hi Normal guibg=NONE ctermbg=NONE
-			      hi NormalNC guibg=NONE ctermbg=NONE
-			      hi EndOfBuffer guibg=NONE ctermbg=NONE
-			      hi NeoTreeNormal guibg=NONE ctermbg=NONE
-			      hi StatusLine guibg=NONE ctermbg=NONE
-			      hi StatusLineNC guibg=NONE ctermbg=NONE
-		    ]])
-		end,
 	},
 	{
 		"folke/todo-comments.nvim",
@@ -1066,5 +1033,4 @@ require("lazy").setup({
 	},
 })
 vim.g.transparent = true
-require("onedark").setup({ style = "darker", transparent = vim.g.transparent })
-require("onedark").load()
+vim.cmd("colorscheme miniautumn")
