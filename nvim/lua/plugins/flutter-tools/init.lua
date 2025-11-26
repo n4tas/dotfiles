@@ -26,7 +26,7 @@ return {
         exception_breakpoints = {},
         evaluate_to_string_in_debug_views = true,
       },
-      flutter_path = "/home/natis/work/libs/flutter/bin/flutter",
+      flutter_path = "/home/natas/devtools/flutter/bin/flutter",
       root_patterns = { ".git", "pubspec.yaml" },
       fvm = false,
       default_run_args = nil,

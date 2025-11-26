@@ -10,13 +10,5 @@ return {
         header = nil, -- Use default LazyVim header
       },
     },
-    -- Hide statusline and tabline on dashboard
-    -- styles = {
-    --   dashboard = {
-    --     wo = {
-    --       statusline = " ",
-    --     },
-    --   },
-    -- },
   },
 }
