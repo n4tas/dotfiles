@@ -19,7 +19,7 @@ return {
         position = "left",
         width = 30,
         mappings = {
-          ["<S-CR>"] = "set_root", -- Shift+Enter to jump into directory
+          ["<M-CR>"] = "set_root", -- Alt+Enter to cd into directory
         },
       },
     })
