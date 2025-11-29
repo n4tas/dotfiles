@@ -10,5 +10,6 @@ return {
         header = nil, -- Use default LazyVim header
       },
     },
+    image = {},
   },
 }
