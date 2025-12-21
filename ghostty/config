@@ -2,7 +2,7 @@
 config-file = ?"~/.config/omarchy/current/theme/ghostty.conf"
 
 # Font
-font-family = "Comic Code Ligatures"
+font-family = "CaskaydiaMono Nerd Font"
 font-style = Regular
 font-size = 13
 
@@ -33,3 +33,6 @@ keybind = super+control+shift+alt+arrow_right=resize_split:right,100
 
 # Slowdown mouse scrolling
 mouse-scroll-multiplier = 0.95
+
+# background-opacity
+background-opacity = 0.8

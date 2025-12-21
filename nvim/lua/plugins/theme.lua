@@ -1,0 +1,1 @@
+/home/natas/.config/omarchy/current/theme/neovim.lua
