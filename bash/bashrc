@@ -6,8 +6,7 @@
 source ~/.local/share/omarchy/default/bash/rc
 alias vim="nvim"
 alias q="exit"
-alias get_idf=". $HOME/devtools/espressif/esp-idf-v5.4.1/export.sh "
-set -o vi
+alias get_idf=". $HOME/devtools/esp/esp-idf/export.sh "
 alias tmux-posturis="tmuxifier load-session code && tmuxifier load-session AI && tmux switch-client -n"
 
 # Add your own exports, aliases, and functions here.
