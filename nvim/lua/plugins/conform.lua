@@ -5,10 +5,10 @@ return {
         event = { "BufWritePre" },
         cmd = { "ConformInfo" },
 
-        -- single source of truth for <leader>f
+        -- single source of truth for <leader>m
         keys = {
             {
-                "<leader>f",
+                "<leader>m",
                 function()
                     require("conform").format({ async = true, lsp_format = "fallback" })
                 end,
@@ -19,7 +19,12 @@ return {
 
         opts = {
             notify_on_error = false,
-
+            format_on_save = false,
+            formatters = {
+                clang_format = {
+                    command = "/usr/bin/clang-format",
+                },
+            },
             -- Format on save for C/C++ only (matches what you had)
 
             formatters_by_ft = {
