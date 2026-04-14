@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+tmux new-session -d -s main -n code
+tmux new-window  -t main:2 -n terminal
+tmux new-window  -t main:3 -n codex
+tmux new-window  -t main:4 -n bash
+tmux select-window -t main:1
+tmux attach -t main
